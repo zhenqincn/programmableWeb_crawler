@@ -13,17 +13,17 @@ http_outFile = codecs.open('http_verified.txt', 'w', encoding='utf8')
 lock = threading.Lock()
 
 
-def getProxyList(targeturl="http://www.xicidaili.com/nn/"):
+def getProxyList(target_url="http://www.xicidaili.com/nn/"):
     countNum = 0
     proxyFile = codecs.open('proxy.txt', 'a', encoding='utf8')
 
-    requestHeader = {
+    request_header = {
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"}
 
     for page in range(1, 10):
-        url = targeturl + str(page)
+        url = target_url + str(page)
         # print url
-        request = urllib.request.Request(url, headers=requestHeader)
+        request = urllib.request.Request(url, headers=request_header)
         html_doc = urllib.request.urlopen(request).read()
 
         soup = BeautifulSoup(html_doc, "html.parser")
@@ -58,26 +58,25 @@ def verifyProxyList():
     """
     验证代理的有效性
     """
-    requestHeader = {
+    request_header = {
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"}
     myurl = 'https://www.programmableweb.com'
-    # myurl = 'http://ip.chinaz.com/getip.aspx'
-    # myurl = 'http://httpbin.org/get'
 
     while True:
         lock.acquire()
         ll = inFile.readline().strip()
         lock.release()
-        if len(ll) == 0: break
+        if len(ll) == 0:
+            break
         line = ll.strip().split('|')
         protocol = line[5]
         ip = line[1]
         port = line[2]
 
-        if (protocol == "HTTPS"):
+        if protocol == "HTTPS":
             try:
                 conn = http.client.HTTPConnection(ip, port, timeout=5.0)
-                conn.request(method='GET', url=myurl, headers=requestHeader)
+                conn.request(method='GET', url=myurl, headers=request_header)
                 res = conn.getresponse()
                 lock.acquire()
                 # print("+++Success:" + ip + ":" + port)
@@ -90,7 +89,7 @@ def verifyProxyList():
         # else:
         #     try:
         #         conn = http.client.HTTPConnection(ip, port, timeout=5.0)
-        #         conn.request(method = 'GET', url = myurl, headers = requestHeader )
+        #         conn.request(method = 'GET', url = myurl, headers = request_header )
         #         res = conn.getresponse()
         #         lock.acquire()
         #         print("+++Success:" + ip + ":" + port)
