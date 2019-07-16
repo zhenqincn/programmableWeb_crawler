@@ -1,8 +1,9 @@
-from scrapy.spiders import Spider
-import scrapy
-import json
 import codecs
+import json
 import random
+import re
+
+from scrapy.spiders import Spider
 
 
 class FollowersSpider(Spider):
@@ -56,9 +57,12 @@ class FollowersSpider(Spider):
         """
         self.page_counter += 1
         print("已爬取到第", self.page_counter, "个界面")
-        print(response.meta['api_id'])
-        print(response.xpath('//title/text()').extract())
-        print(response.xpath('//section[@id="block-views-api-followers-row-top"').extract())
+        print("id", response.meta['api_id'])
+        span_content = response.xpath(
+            '//section[@id="block-views-api-followers-row-top"]/div[@class="block-title"][1]/span[1]').extract()[0]
+        follower_num = int(re.findall(re.compile(r'[(](.*?)[)]', re.S), span_content)[0])
+        self.writer.write(str(response.meta['api_id']) + " " + str(follower_num) + "\n")
+        self.writer.flush()
 
     def get_random_proxy(self):
         """
