@@ -58,6 +58,7 @@ class FollowersSpider(Spider):
         print("已爬取到第", self.page_counter, "个界面")
         print(response.meta['api_id'])
         print(response.xpath('//title/text()').extract())
+        print(response.xpath('//section[@id="block-views-api-followers-row-top"').extract())
 
     def get_random_proxy(self):
         """
