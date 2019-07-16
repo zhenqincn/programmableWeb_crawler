@@ -26,7 +26,7 @@ class FollowersSpider(Spider):
             for line in lines:
                 self.crawled_api_ids.append(line.split(" ")[0])
         self.writer = codecs.open("api_name_num_followers_mapping.txt", 'a', encoding='utf-8')
-        self.api_dic = {}  # 存储原始api信息的字典，key为app_id
+        self.api_dic = {}  # 存储原始api信息的字典，key为api_id
         with codecs.open("../8459apis/apis.json", 'r', encoding='utf-8') as reader:
             api_list_all = json.load(reader)
             for api in api_list_all:
@@ -43,12 +43,20 @@ class FollowersSpider(Spider):
         for selected_api in self.api_list_selected:
             if str(selected_api['api_id']) not in self.crawled_api_ids:  # 说明当前api的follower信息还没被爬取过
                 url = self.api_dic[str(selected_api['api_id'])]['api_pw_url']
-                yield response.follow(url, callback=self.parse_one, meta={'proxy': self.get_random_proxy()})
+                request = response.follow(url, callback=self.parse_one, meta={'proxy': self.get_random_proxy()})
+                request.meta['api_id'] = str(selected_api['api_id'])  # 将api_id作为参数传递过去
+                yield request
                 # yield response.follow(url, callback=self.parse_one)
 
     def parse_one(self, response):
+        """
+        爬取到一个页面后，处理并保存数据
+        :param response:
+        :return:
+        """
         self.page_counter += 1
         print("已爬取到第", self.page_counter, "个界面")
+        print(response.meta['api_id'])
         print(response.xpath('//title/text()').extract())
 
     def get_random_proxy(self):
@@ -57,5 +65,4 @@ class FollowersSpider(Spider):
         :return:
         """
         proxy = random.choice(self.proxies)
-        print(proxy)
         return proxy
