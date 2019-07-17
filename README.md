@@ -1,2 +1,2 @@
 # programmableWeb_crawler
-programmableWeb爬虫
+从programmableWeb上爬取各个api的follower数据
