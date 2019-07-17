@@ -1,2 +1,7 @@
 # programmableWeb_crawler
 从programmableWeb上爬取各个api的follower数据
+
+
+`scrapy crawl pw_followers_8459`爬取20个类共8,459个api的follower的个数
+
+`scrapy crawl pw_followers_all`爬取全部的api的follower的个数

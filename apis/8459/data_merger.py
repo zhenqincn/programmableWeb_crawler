@@ -6,7 +6,7 @@ import json
 from collections import defaultdict
 
 api_id_nfollowers_dic = defaultdict(int)
-with codecs.open('../../pwspider/api_name_num_followers_mapping.txt', 'r', encoding='utf-8') as reader:
+with codecs.open('../../pwspider/api_name_num_followers_mapping_8459.txt', 'r', encoding='utf-8') as reader:
     line = reader.readline()
     while line:
         api_id_nfollowers_dic[line.split(' ')[0]] = int(line.split(' ')[1])
