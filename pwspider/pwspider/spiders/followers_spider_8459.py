@@ -2,6 +2,7 @@ import codecs
 import json
 import random
 import re
+import os
 
 from scrapy.spiders import Spider
 
@@ -10,7 +11,7 @@ class FollowersSpider(Spider):
     """
     从programmableWeb上爬取每个api的follower信息
     """
-    name = 'pw_followers'
+    name = 'pw_followers_8459'
     start_urls = ['https://www.programmableweb.com']
     download_delay = 0.2  # 设置爬取网页的间隔，避免速度过快导致被封停
 
@@ -22,17 +23,19 @@ class FollowersSpider(Spider):
         self.crawled_api_ids = []  # 记录已经爬取的api的id
         self.target_number = 0  # 记录还需要爬取的api的数目
         self.page_counter = 0  # 记录本次启动爬虫爬取的页面的数目
+        if not os.path.exists("api_name_num_followers_mapping.txt"):   # 如果不存在文件，则创建
+            open("api_name_num_followers_mapping.txt", 'w')
         with codecs.open("api_name_num_followers_mapping.txt", 'r', encoding='utf-8') as reader:
             lines = reader.readlines()
             for line in lines:
                 self.crawled_api_ids.append(line.split(" ")[0])
         self.writer = codecs.open("api_name_num_followers_mapping.txt", 'a', encoding='utf-8')
         self.api_dic = {}  # 存储原始api信息的字典，key为api_id
-        with codecs.open("../8459apis/apis.json", 'r', encoding='utf-8') as reader:
+        with codecs.open("../apis/all/apis.json", 'r', encoding='utf-8') as reader:
             api_list_all = json.load(reader)
             for api in api_list_all:
                 self.api_dic[api['api_id']] = api
-        with codecs.open("../8459apis/api_info.json", 'r', encoding='utf-8') as reader:
+        with codecs.open("../apis/8459/api_info_8459.json", 'r', encoding='utf-8') as reader:
             self.api_list_selected = json.load(reader)
         print("原数据共有", len(self.api_dic), "个api")
         print("选取其中的", len(self.api_list_selected), "个api进行爬取")
