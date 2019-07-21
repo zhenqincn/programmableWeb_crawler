@@ -47,7 +47,7 @@ class FollowersSpider(Spider):
         for api in self.api_list:
             if api['api_id'] not in self.crawled_api_ids:  # 说明当前api的follower信息还没被爬取过
                 url = api['api_pw_url']
-                request = response.follow(url, callback=self.parse_one, meta={'proxy': self.get_random_proxy()})
+                request = response.follow(url, callback=self.parse_one)
                 request.meta['api_id'] = api['api_id']  # 将api_id作为参数传递过去
                 yield request
                 # yield response.follow(url, callback=self.parse_one)
